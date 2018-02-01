@@ -1,11 +1,9 @@
-import edu.princeton.cs.algs4.StdRandom;
-import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    boolean[] sites;
-    private int n;
-    private WeightedQuickUnionUF uf;
+    private boolean[] sites;
+    private final int n;
+    private final WeightedQuickUnionUF uf;
     private int count;
 
     public Percolation(int n) {  // create n-by-n grid, with all sites blocked
@@ -29,6 +27,8 @@ public class Percolation {
         if (sites[x]) return;
         sites[x] = true;
         count++;
+
+        uf.union(x, x);
 
         int i = row - 1;
         int j = col;
@@ -62,8 +62,10 @@ public class Percolation {
     }
 
     public boolean isFull(int row, int col) { // is site (row, col) full?
-        int x = changeScale(row, col);
-        if (uf.connected(0, x)) return true;
+        if (isOpen(row, col)) {
+            int x = changeScale(row, col);
+            if (uf.connected(0, x)) return true;
+        }
         return false;
     }
 
@@ -72,6 +74,10 @@ public class Percolation {
     }
 
     public boolean percolates() { // does the system percolate?
+        if (n == 1) {
+            if (sites[0]) return true;
+            return false;
+        }
         return uf.connected(0, n * n + 1);
     }
 
