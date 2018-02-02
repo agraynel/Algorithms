@@ -1,10 +1,14 @@
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
-import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class PercolationStats {
 
-    private double[] T;
+    private final double[] T;
+    private final double C = 1.96;
+    private double mean;
+    private double stddev;
+    private double confidenceLo;
+    private double confidenceHi;
 
     public PercolationStats(int n, int trials) { // perform trials independent experiments on an n-by-n grid
         if (n <= 0 || trials <= 0) {
@@ -26,22 +30,28 @@ public class PercolationStats {
             }
             T[i] = (double)step/(n * n);
         }
+
+        mean = StdStats.mean(T);
+        stddev = StdStats.stddev(T);
+        double tmp = (C * stddev) / Math.sqrt(trials);
+        confidenceLo = mean - tmp;
+        confidenceHi = mean + tmp;
     }
 
     public double mean() { // sample mean of percolation threshold
-        return StdStats.mean(T);
+        return mean;
     }
 
     public double stddev() { // sample standard deviation of percolation threshold
-        return StdStats.stddev(T);
+        return stddev;
     }
 
     public double confidenceLo() { // low  endpoint of 95% confidence interval
-        return mean() - 1.96 * stddev() / Math.sqrt(T.length);
+        return confidenceLo;
     }
 
     public double confidenceHi() { // high endpoint of 95% confidence interval
-        return mean() + 1.96 * stddev() / Math.sqrt(T.length);
+        return confidenceHi;
     }
 
     public static void main(String[] args) { // test client (described below)
