@@ -44,12 +44,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item dequeue() {
         if (isEmpty())
             throw new NoSuchElementException("Queue is empty!");
-        Item item = null;
-        int rand = 0;
-        while (item == null) {
-            rand = StdRandom.uniform(size);
-            item = array[rand];
-        }
+        int rand = StdRandom.uniform(size);
+        Item item = array[rand];
         array[rand] = array[size - 1];
         array[size - 1] = null;
         size--;
@@ -61,25 +57,31 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item sample() {
         if (isEmpty())
             throw new NoSuchElementException("Queue is empty!");
-        int rand = 0;
-        Item item = null;
-        while (item == null) {
-            rand = StdRandom.uniform(size);
-            item = array[rand];
-        }
+        int rand = StdRandom.uniform(size);
+        Item item = array[rand];
         return item;
     }
 
     public Iterator<Item> iterator() {
-        return new NodeIterator();
+        return new RandomIterator();
     }
     // return an iterator over items in order from front to end
 
-    private class NodeIterator implements Iterator<Item> {
-        int curr = size;
+    private class RandomIterator implements Iterator<Item> {
+        int[] shuffle;
+        int i;
+
+        public RandomIterator() {
+            shuffle = new int[size];
+            i = 0;
+            for (int j = 0; j < size; j++) {
+                shuffle[j] = j;
+            }
+            StdRandom.shuffle(shuffle);
+        }
 
         public boolean hasNext() {
-            return curr != 0;
+            return i < size;
         }
 
         public void remove() {
@@ -89,14 +91,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         public Item next() {
             if (!hasNext())
                 throw new NoSuchElementException("No next item!");
-            int rand = 0;
-            Item item = null;
-            while (item == null) {
-                rand = StdRandom.uniform(curr);
-                item = array[rand];
-            }
-            array[rand] = array[--curr];
-            return item;
+            return array[shuffle[i++]];
         }
     }
 
