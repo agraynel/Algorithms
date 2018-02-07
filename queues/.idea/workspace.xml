@@ -89,8 +89,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/Permutation.java" />
-        <option value="$PROJECT_DIR$/src/Deque.java" />
         <option value="$PROJECT_DIR$/src/RandomizedQueue.java" />
+        <option value="$PROJECT_DIR$/src/Deque.java" />
       </list>
     </option>
   </component>
@@ -258,12 +258,12 @@
       <option name="presentableId" value="Default" />
       <updated>1517602577714</updated>
       <workItem from="1517602579373" duration="1425000" />
-      <workItem from="1517960454226" duration="11420000" />
+      <workItem from="1517960454226" duration="11695000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12845000" />
+    <option name="totallyTimeSpent" value="13120000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="20" y="23" width="1260" height="680" extended-state="0" />
