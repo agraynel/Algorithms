@@ -1,2 +1,16 @@
 
 *.xml
+
+*.iml
+
+*.jar
+
+.idea
+
+shared
+
+out
+
+*.png
+
+*.txt
