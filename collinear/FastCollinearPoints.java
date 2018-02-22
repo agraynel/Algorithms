@@ -6,7 +6,7 @@ import java.util.List;
 public class FastCollinearPoints {
     private List<LineSegment> lineSegments = new ArrayList<>();
     public FastCollinearPoints(Point[] points) { // finds all line segments containing 4 or more points
-        if (points == null)
+        if (points == null || points.length == 0)
             throw new IllegalArgumentException("null!");
         for (Point p: points) {
             if (p == null)
@@ -21,7 +21,19 @@ public class FastCollinearPoints {
                 throw new IllegalArgumentException("duplicate!");
         }
 
-        helper(newPoints);
+        for (int i = 0; i < newPoints.length - 3; i++) {
+            Arrays.sort(newPoints);
+            Arrays.sort(newPoints, newPoints[i].slopeOrder());
+
+            for (int start = 1, end = 2; end < newPoints.length; end++) {
+                while (end < newPoints.length && newPoints[0].slopeTo(newPoints[start]) == newPoints[0].slopeTo(newPoints[end])) {
+                    end++;
+                }
+                if (end - start >= 3 && newPoints[0].compareTo(newPoints[start]) < 0)
+                    lineSegments.add(new LineSegment(newPoints[0], newPoints[end - 1]));
+                start = end;
+            }
+        }
     }
 
     public int numberOfSegments() { // the number of line segments{
@@ -34,30 +46,5 @@ public class FastCollinearPoints {
             res[i] = lineSegments.get(i);
         }
         return res;
-    }
-
-    private void helper(Point[] points) {
-        for (int i = 0; i < points.length; i++) {
-            Point p = points[i];
-            Comparator<Point> slopeOrder = p.slopeOrder();
-            Point[] newPoints = new Point[points.length];
-            System.arraycopy( points, 0, newPoints, 0, points.length );
-            Arrays.sort(newPoints, slopeOrder);
-
-            int start = 1, end = 2;
-            while (end < newPoints.length) {
-                if (slopeOrder.compare(newPoints[start], newPoints[end]) == 0) {
-                    end++;
-
-                } else {
-                    if (end - start >= 3) {
-                        if (newPoints[start].compareTo(newPoints[start + 1]) < 0)
-                            lineSegments.add(new LineSegment(newPoints[start], newPoints[end - 1]));
-                    }
-                    start = end;
-                    end++;
-                }
-            }
-        }
     }
 }

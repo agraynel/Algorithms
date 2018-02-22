@@ -9,7 +9,7 @@ public class BruteCollinearPoints {
     public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
         if (points == null)
             throw new IllegalArgumentException("null!");
-        for (Point p: points) {
+        for (Point p : points) {
             if (p == null)
                 throw new IllegalArgumentException("null!");
         }
@@ -22,9 +22,29 @@ public class BruteCollinearPoints {
                 throw new IllegalArgumentException("duplicate!");
         }
 
-        helper(newPoints);
+        for (int i = 0; i < newPoints.length; i++) {
+            Point p1 = newPoints[i];
+            for (int j = i + 1; j < newPoints.length; j++) {
+                Point p2 = newPoints[j];
+                for (int k = j + 1; k < newPoints.length; k++) {
+                    Point p3 = newPoints[k];
+
+                    if (p1.slopeTo(p2) == p1.slopeTo(p3)) {
+                        for (int l = k + 1; l < newPoints.length; l++) {
+                            Point p4 = newPoints[l];
+                            if (p1.slopeTo(p2) == p1.slopeTo(p4)) {
+                                Point[] sortPoints = {p1, p2, p3, p4};
+                                Arrays.sort(sortPoints);
+                                lineSegments.add(new LineSegment(sortPoints[0], sortPoints[3]));
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     }
+
     public int numberOfSegments() { // the number of line segments
         return lineSegments.size();
     }
@@ -35,29 +55,5 @@ public class BruteCollinearPoints {
             res[i] = lineSegments.get(i);
         }
         return res;
-    }
-
-    private void helper(Point[] points) {
-        for (int i = 0; i < points.length; i++) {
-            Point p1 = points[i];
-            for (int j = i + 1; j < points.length; j++) {
-                Point p2 = points[j];
-                for (int k = j + 1; k < points.length; k++) {
-                    Point p3 = points[k];
-
-                    if (p1.slopeTo(p2) == p1.slopeTo(p3)) {
-                        for (int l = k + 1; l < points.length; l++) {
-                            Point p4 = points[l];
-                            if (p1.slopeTo(p2) == p1.slopeTo(p4)) {
-
-                                Point[] sortPoints = {p1, p2, p3, p4};
-                                Arrays.sort(sortPoints);
-                                lineSegments.add(new LineSegment(sortPoints[0], sortPoints[3]));
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }
