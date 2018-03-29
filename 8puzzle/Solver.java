@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.MinPQ;
-import java.util.Stack;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Stack;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
     private SearchNode res;
@@ -16,6 +18,7 @@ public class Solver {
             this.weight = move + board.manhattan();
         }
 
+        @Override
         public int compareTo(SearchNode that) {
             return this.weight - that.weight;
         }
@@ -43,29 +46,29 @@ public class Solver {
         MinPQ<SearchNode> twinPQ = new MinPQ<>();
         twinPQ.insert(twinNode);
 
-        while (true) {
-            if (searchNode.isGoal()) {
-                res = searchNode;
-                break;
+        SearchNode curr = originPQ.delMin();
+        SearchNode currTwin = twinPQ.delMin();
+
+        while (!curr.board.isGoal() && !currTwin.board.isGoal()) {
+            for (Board neighbor : curr.board.neighbors()) {
+                // A critical optimization
+                if (curr.prevNode != null && neighbor.equals(curr.prevNode.board)) {
+                    continue;
+                }
+                originPQ.insert(new SearchNode(neighbor, curr));
             }
-            if (twinNode.isGoal()) {
-                res = null;
-                break;
+
+            for (Board neighbor : currTwin.board.neighbors()) {
+                if (currTwin.prevNode != null && neighbor.equals(currTwin.prevNode.board)) {
+                    continue;
+                }
+                twinPQ.insert(new SearchNode(neighbor, currTwin));
             }
-            searchNode = nextNode(originPQ);
+
+            curr = originPQ.delMin();
+            currTwin = twinPQ.delMin();
         }
-
-    }
-
-    private SearchNode nextNode(MinPQ<SearchNode> pq) {
-        SearchNode minNode = pq.delMin();
-
-        for (Board neighbor: minNode.board.neighbors()) {
-            if (minNode.prevNode != null && !minNode.prevNode.board.equals(neighbor)) {
-                pq.insert(new SearchNode(neighbor, minNode));
-            }
-        }
-        return minNode;
+        res = curr.board.isGoal() ? curr : null;
     }
 
     public boolean isSolvable() { // is the initial board solvable?
@@ -86,7 +89,6 @@ public class Solver {
         return stack;
     }
 
-    public static void main(String[] args) { // solve a slider puzzle (given below)
-
+    public static void main(String [] args) {
     }
 }
